@@ -24,24 +24,19 @@ class Canvas(QWidget):
         self.selected_circle = None  # Track the currently selected circle
         self.dragging = False
         self.dragged = False
-
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)  # Enable antialiasing for smoother circles
         
+        
+        
+    def drawLines(self,painter):
         for circle in self.circles:
             for line in circle.lines:
                 painter.setBrush(QColor(255, 150, 255))  # Fill color
                 painter.setPen(QPen(QColor(0, 0, 255), 2))  # Outline color
-                print(line.center)
-                print(circle.center.x(),circle.center.y(),line.center.x(),line.center.y())
                 painter.drawLine(circle.center.x(),circle.center.y(),line.center.x(),line.center.y())
-        
-        
-
-        for circle in self.circles:
-            
                 
+    def drawCircles(self,painter):
+        for circle in self.circles:
+             
             if(circle == self.selected_circle):
                 painter.setBrush(QColor(255, 150, 255))  # Fill color
                 painter.setPen(QPen(QColor(0, 0, 255), 2))  # Outline color
@@ -50,6 +45,20 @@ class Canvas(QWidget):
                 painter.setBrush(QColor(100, 150, 255))  # Fill color
                 painter.setPen(QPen(QColor(0, 0, 255), 2))  # Outline color
                 painter.drawEllipse(circle.center, circle.radius, circle.radius)  # Draw the circle
+                
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)  # Enable antialiasing for smoother circles
+        
+        self.drawLines(painter)
+        self.drawCircles(painter)
+        
+        
+        
+        
+
+        
             
 
     def mousePressEvent(self, event):
@@ -61,7 +70,7 @@ class Canvas(QWidget):
                     if(self.selected_circle == None):
                         self.selected_circle = circle
                         self.dragging = True
-                    elif(self.selected_circle != circle):
+                    elif(self.selected_circle != circle and circle not in self.selected_circle.lines):
                         self.selected_circle.lines.append(circle)
                         self.selected_circle = None
                     else:
@@ -80,6 +89,9 @@ class Canvas(QWidget):
         elif event.button() == Qt.RightButton:
             for circle in self.circles:
                 if circle.contains(event.pos()):
+                    for circle2 in self.circles:
+                        if circle in circle2.lines:
+                            circle2.lines.remove(circle)
                     self.circles.remove(circle)
                     self.dragging = True
                     break
