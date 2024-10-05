@@ -1,9 +1,5 @@
-import sys
-import numpy as np
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout,QHBoxLayout, QPushButton , QSplitter , QToolBar, QAction, QSizePolicy
-from PyQt5.QtGui import QPainter, QColor, QPalette, QPen, QIcon,QPixmap
+from Imports import *
 from PyQt5.QtCore import Qt, QPoint
-
 
 class Circle:
     def __init__(self, center: QPoint, radius: int):
@@ -18,6 +14,8 @@ class Circle:
     
     def overlap(self, point: QPoint) -> bool:
         return (point.x() - self.center.x()) ** 2 + (point.y() - self.center.y()) ** 2 < (2*self.radius) ** 2
+
+
 
 class Canvas(QWidget):
     def __init__(self):
