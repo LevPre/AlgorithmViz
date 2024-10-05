@@ -1,17 +1,13 @@
 import sys
 import numpy as np
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout
-from PyQt5.QtGui import QPainter, QColor, QPen
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout,QHBoxLayout, QPushButton , QSplitter , QToolBar, QAction, QSizePolicy
+from PyQt5.QtGui import QPainter, QColor, QPalette, QPen, QIcon,QPixmap
 from PyQt5.QtCore import Qt, QPoint
 
 
-#dark gray #393646
-#light gray #4F4557
-#lighter gray #6D5D6E
-#Off white #F4EEE0
-
 class Circle:
     def __init__(self, center: QPoint, radius: int):
+        
         self.center = center
         self.radius = radius
         self.lines = []
@@ -66,11 +62,11 @@ class Canvas(QWidget):
         for circle in self.circles:
              
             if(circle == self.selected_circle):
-                painter.setBrush(QColor("#F4EEE0"))  # Fill color
+                painter.setBrush(QColor("#6D5D6E"))  # Fill color
                 painter.setPen(QPen(QColor("#222222"), 3))  # Outline color
                 painter.drawEllipse(circle.center, circle.radius, circle.radius)  # Draw the circle
             else:
-                painter.setBrush(QColor("#636363"))  # Fill color
+                painter.setBrush(QColor("#505050"))  # Fill color
                 painter.setPen(QPen(QColor("#222222"), 3))  # Outline color
                 painter.drawEllipse(circle.center, circle.radius, circle.radius)  # Draw the circle
                 
@@ -78,6 +74,10 @@ class Canvas(QWidget):
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)  # Enable antialiasing for smoother circles
+        
+        painter.setBrush(QColor("#333333"))  # Fill color
+        painter.setPen(QPen(QColor("#222222"), 3))  # Outline color
+        painter.drawRect(0,0,self.width(),self.height())
         
         self.drawLines(painter)
         self.drawCircles(painter)
@@ -103,6 +103,9 @@ class Canvas(QWidget):
                     break
                 
             else:
+                if self.selected_circle != None:
+                    self.selected_circle = None
+                    return
                 for circle in self.circles:
                     if(circle.overlap(event.pos())):
                         return
@@ -121,6 +124,7 @@ class Canvas(QWidget):
                     self.dragging = True
                     break
         
+             
     
     def OnScreen(self,event):
         if(0<event.pos().x()<self.width() and 0<event.pos().y()<self.height()):
@@ -166,31 +170,4 @@ class Canvas(QWidget):
             
                     
            
-                
-          
-                
-            
-
-
-       
-
-class MainWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("Circle Drawing App")
-        self.setGeometry(100, 100, 600, 400) # Set window size
-        self.setStyleSheet("background-color: #424242;") 
-
-
-        # Create a canvas instance
-        self.canvas = Canvas()
-        self.setCentralWidget(self.canvas)  # Set the canvas as central widget
-
-def main():
-    app = QApplication(sys.argv)  
-    window = MainWindow()
-    window.show()  # Show the main window
-    sys.exit(app.exec_())  # Run the application
-
-if __name__ == "__main__":
-    main()
+        
