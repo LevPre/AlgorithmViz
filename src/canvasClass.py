@@ -25,12 +25,14 @@ class Canvas(QWidget):
         self.selected_circle = None  # Track the currently selected circle
         self.dragging = False
         self.dragged = False
+        self.Directed = True
+        self.AllLines = []
         
         
         
         
         
-    def drawLines(self,painter):
+    def drawDirectedLines(self,painter):
         ArrowSize = 30
         ArrowDegree = np.pi / 12
         for circle in self.circles:
@@ -54,7 +56,25 @@ class Canvas(QWidget):
                 
                 painter.drawLine(Point2[0],Point2[1],ArrowTip1[0],ArrowTip1[1])
                 painter.drawLine(Point2[0],Point2[1],ArrowTip2[0],ArrowTip2[1])
-             
+                
+                
+                
+    def drawUnDirectedLines(self,painter):
+        for circle in self.circles:
+            for line in circle.lines:
+                
+                deltaX = circle.center.x() - line.center.x()
+                deltaY = circle.center.y() - line.center.y()
+                
+                Alpha = np.atan2(deltaY,deltaX)
+                
+                Point1 = [int(circle.center.x() - circle.radius * np.cos(Alpha) ), int(circle.center.y() - circle.radius * np.sin(Alpha)) ]
+                Point2 = [int(line.center.x() + line.radius * np.cos(Alpha) ), int(line.center.y() + line.radius * np.sin(Alpha)) ]
+                
+                painter.setBrush(QColor("#393646"))  # Fill color
+                painter.setPen(QPen(QColor("#222222"), 3))  # Outline color
+                painter.drawLine(Point1[0],Point1[1],Point2[0],Point2[1])
+                
                 
     def drawCircles(self,painter):
         for circle in self.circles:
@@ -77,7 +97,10 @@ class Canvas(QWidget):
         painter.setPen(QPen(QColor("#222222"), 3))  # Outline color
         painter.drawRect(0,0,self.width(),self.height())
         
-        self.drawLines(painter)
+        if(self.Directed):
+            self.drawDirectedLines(painter)
+        else:
+            self.drawUnDirectedLines(painter)
         self.drawCircles(painter)
        
         
@@ -92,9 +115,11 @@ class Canvas(QWidget):
                         self.dragging = True
                     elif(self.selected_circle != circle and circle not in self.selected_circle.lines):
                         self.selected_circle.lines.append(circle)
+                        self.AllLines.append([circle,self.selected_circle])
                         self.selected_circle = None
                     elif(self.selected_circle != circle and circle in self.selected_circle.lines):
                         self.selected_circle.lines.remove(circle)
+                        self.AllLines.remove([circle,self.selected_circle])
                         self.selected_circle = None
                     else:
                         self.selected_circle = None
@@ -118,6 +143,10 @@ class Canvas(QWidget):
                     for circle2 in self.circles:
                         if circle in circle2.lines:
                             circle2.lines.remove(circle)
+                    for line in self.AllLines:
+                        if line[0] == circle or line[1] == circle:
+                            self.AllLines.remove(line)
+                        
                     self.circles.remove(circle)
                     self.dragging = True
                     break
@@ -167,5 +196,7 @@ class Canvas(QWidget):
                     self.update()  # Repaint the canvas
             
                     
-           
+#Algorithms:
+    def MyBFS(self):
+        return
         
