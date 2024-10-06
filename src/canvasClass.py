@@ -197,6 +197,20 @@ class Canvas(QWidget):
             
                     
 #Algorithms:
-    def MyBFS(self):
-        return
+    def MyDirectedBFS(self):
+        queue = [self.selected_circle]
+        visited = []
+        
+        while(len(queue) != 0):
+            for circle in queue[0].lines:
+                queue.append(circle)
+                
+            visited.append(queue[0])
+            queue.pop(0)
+        
+        print(visited)
+            
+    
+        
+
         

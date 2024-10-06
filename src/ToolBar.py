@@ -66,7 +66,7 @@ class MyToolBar(QWidget):
                 
             case "BFS":
                 if self.canvas.Directed : 
-                    self.DirectBfsAlgo()
+                    self.canvas.MyDirectedBFS()
                 else:
                     self.UndirectBfsAlgo()
 
