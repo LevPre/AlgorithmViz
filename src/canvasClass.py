@@ -1,6 +1,6 @@
 from Imports import *
 from PyQt5.QtCore import Qt, QPoint
-
+from AlgorithmAnimations import *
 class Circle:
     def __init__(self, center: QPoint, radius: int):
         
@@ -18,7 +18,7 @@ class Circle:
 
 
 class Canvas(QWidget):
-    def __init__(self):
+    def __init__(self,timer):
         super().__init__()
         self.setMinimumSize(700, 400)  # Set minimum size for the canvas
         self.circles = []  # List to hold circles
@@ -27,7 +27,8 @@ class Canvas(QWidget):
         self.dragged = False
         self.Directed = True
         self.AllLines = []
-        
+        self.is_animating = False
+        self.timer = timer
         
         
         
@@ -195,20 +196,13 @@ class Canvas(QWidget):
                     self.selected_circle = None  # Deselect the circle
                     self.update()  # Repaint the canvas
             
-                    
-#Algorithms:
-    def MyDirectedBFS(self):
-        queue = [self.selected_circle]
-        visited = []
+    
+    
+
         
-        while(len(queue) != 0):
-            for circle in queue[0].lines:
-                queue.append(circle)
-                
-            visited.append(queue[0])
-            queue.pop(0)
         
-        print(visited)
+       
+        
             
     
         

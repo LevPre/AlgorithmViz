@@ -4,9 +4,10 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSize
 
 class MyToolBar(QWidget):
-    def __init__(self, canvas):
+    def __init__(self, canvas , algorithms):
         super().__init__()
         self.canvas = canvas
+        self.algorithms = algorithms
         self.buttons = []
         self.toolBar = QToolBar("side", self)
         self.toolBar.setMinimumSize(int(self.width()*0.4), int(self.width()*0.4))
@@ -65,10 +66,10 @@ class MyToolBar(QWidget):
                 self.canvas.Directed = True
                 
             case "BFS":
-                if self.canvas.Directed : 
-                    self.canvas.MyDirectedBFS()
+                if self.canvas.Directed and self.canvas.selected_circle != None : 
+                    self.algorithms.start()
                 else:
-                    self.UndirectBfsAlgo()
+                    pass
 
                 
             case _:
@@ -78,8 +79,3 @@ class MyToolBar(QWidget):
         
         
         
-        
-    def DirectBfsAlgo(self):
-        return
-    def UndirectBfsAlgo(self):
-        return
