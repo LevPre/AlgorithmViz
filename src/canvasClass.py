@@ -2,11 +2,12 @@ from Imports import *
 from PyQt5.QtCore import Qt, QPoint
 from AlgorithmAnimations import *
 class Circle:
-    def __init__(self, center: QPoint, radius: int):
+    def __init__(self, center: QPoint, radius: int , color:str):
         
         self.center = center
         self.radius = radius
         self.lines = []
+        self.color = color
 
 
     def contains(self, point: QPoint) -> bool:
@@ -29,11 +30,11 @@ class Canvas(QWidget):
         self.AllLines = []
         self.is_animating = False
         self.timer = timer
+        self.AnimatedLines = []
         
         
         
-        
-    def drawDirectedLines(self,painter):
+    def drawDirectedLines(self,painter,color = "#222222"):
         ArrowSize = 30
         ArrowDegree = np.pi / 12
         for circle in self.circles:
@@ -47,8 +48,9 @@ class Canvas(QWidget):
                 Point1 = [int(circle.center.x() - circle.radius * np.cos(Alpha) ), int(circle.center.y() - circle.radius * np.sin(Alpha)) ]
                 Point2 = [int(line.center.x() + line.radius * np.cos(Alpha) ), int(line.center.y() + line.radius * np.sin(Alpha)) ]
                 
-                painter.setBrush(QColor("#393646"))  # Fill color
-                painter.setPen(QPen(QColor("#222222"), 3))  # Outline color
+                
+                painter.setBrush(QColor(color))  # Fill color
+                painter.setPen(QPen(QColor(color), 3))  # Outline color
                 painter.drawLine(Point1[0],Point1[1],Point2[0],Point2[1])
                 
                 ArrowTip1 = [int(Point2[0]+ArrowSize*np.cos(Alpha + ArrowDegree)) ,int(Point2[1] + ArrowSize*np.sin(Alpha + ArrowDegree))]
@@ -57,6 +59,27 @@ class Canvas(QWidget):
                 
                 painter.drawLine(Point2[0],Point2[1],ArrowTip1[0],ArrowTip1[1])
                 painter.drawLine(Point2[0],Point2[1],ArrowTip2[0],ArrowTip2[1])
+                
+        for line in self.AnimatedLines:
+            deltaX = line[0].center.x() - line[1].center.x()
+            deltaY = line[0].center.y() - line[1].center.y()
+                
+            Alpha = np.atan2(deltaY,deltaX)
+                
+            Point1 = [int(line[0].center.x() - line[0].radius * np.cos(Alpha) ), int(line[0].center.y() - line[0].radius * np.sin(Alpha)) ]
+            Point2 = [int(line[1].center.x() + line[1].radius * np.cos(Alpha) ), int(line[1].center.y() + line[1].radius * np.sin(Alpha)) ]
+                
+                
+            painter.setBrush(QColor(color))  # Fill color
+            painter.setPen(QPen(QColor("#713a7e"), 3))  # Outline color
+            painter.drawLine(Point1[0],Point1[1],Point2[0],Point2[1])
+                
+            ArrowTip1 = [int(Point2[0]+ArrowSize*np.cos(Alpha + ArrowDegree)) ,int(Point2[1] + ArrowSize*np.sin(Alpha + ArrowDegree))]
+            ArrowTip2 = [int(Point2[0]+ArrowSize*np.cos(Alpha - ArrowDegree)) ,int(Point2[1] + ArrowSize*np.sin(Alpha - ArrowDegree))]
+                
+                
+            painter.drawLine(Point2[0],Point2[1],ArrowTip1[0],ArrowTip1[1])
+            painter.drawLine(Point2[0],Point2[1],ArrowTip2[0],ArrowTip2[1])
                 
                 
                 
@@ -85,7 +108,7 @@ class Canvas(QWidget):
                 painter.setPen(QPen(QColor("#222222"), 3))  # Outline color
                 painter.drawEllipse(circle.center, circle.radius, circle.radius)  # Draw the circle
             else:
-                painter.setBrush(QColor("#505050"))  # Fill color
+                painter.setBrush(QColor(circle.color))  # Fill color
                 painter.setPen(QPen(QColor("#222222"), 3))  # Outline color
                 painter.drawEllipse(circle.center, circle.radius, circle.radius)  # Draw the circle
                 
@@ -97,11 +120,14 @@ class Canvas(QWidget):
         painter.setBrush(QColor("#333333"))  # Fill color
         painter.setPen(QPen(QColor("#222222"), 3))  # Outline color
         painter.drawRect(0,0,self.width(),self.height())
-        
+    
+    
         if(self.Directed):
             self.drawDirectedLines(painter)
         else:
             self.drawUnDirectedLines(painter)
+       
+            
         self.drawCircles(painter)
        
         
@@ -134,7 +160,7 @@ class Canvas(QWidget):
                     if(circle.overlap(event.pos())):
                         return
                 # If no circle is selected, create a new one
-                new_circle = Circle(event.pos(), 30)  # Create a circle with radius 30
+                new_circle = Circle(event.pos(), 30 , "#505050")  # Create a circle with radius 30
                 self.circles.append(new_circle)
                 
 

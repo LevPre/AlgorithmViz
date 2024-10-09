@@ -67,7 +67,7 @@ class MyToolBar(QWidget):
                 
             case "BFS":
                 if self.canvas.Directed and self.canvas.selected_circle != None : 
-                    self.algorithms.start()
+                    self.algorithms.BfsAnimation()
                 else:
                     pass
 
