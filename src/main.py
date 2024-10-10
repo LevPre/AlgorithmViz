@@ -11,7 +11,6 @@ from AlgorithmAnimations import *
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        
         self.timer = QTimer(self)
         
         
@@ -19,15 +18,10 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Circle Drawing App")
         self.setGeometry(100, 100, 800, 400)  
         self.setStyleSheet("background-color: #222222;") 
-        self.canvas = Canvas(self.timer)
-        self.algoAnimate = AlgoAnimation(self.canvas, 1000, self.timer)
-        self.MytoolBar = MyToolBar(self.canvas,self.algoAnimate)
+        self.algoAnimate = AlgoAnimation(self.timer)
+        self.MytoolBar = MyToolBar(self.algoAnimate)
         self.addToolBar(Qt.LeftToolBarArea, self.MytoolBar.toolBar)
-        
-        
-        
-        
-        self.setCentralWidget(self.canvas)
+        self.setCentralWidget(self.algoAnimate)
         
 
     

@@ -4,9 +4,8 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSize
 
 class MyToolBar(QWidget):
-    def __init__(self, canvas , algorithms):
+    def __init__(self,algorithms):
         super().__init__()
-        self.canvas = canvas
         self.algorithms = algorithms
         self.buttons = []
         self.toolBar = QToolBar("side", self)
@@ -47,7 +46,8 @@ class MyToolBar(QWidget):
     def on_action_triggered(self):
         match self.sender().objectName():
             case "Clean":
-                self.canvas.circles.clear()
+                self.algorithms.circles.clear()
+                self.algorithms.Lines.clear()
                 
             case "Directed":
                 action = QAction(QIcon(), "UnDirected", self)
@@ -55,7 +55,7 @@ class MyToolBar(QWidget):
                 action.setObjectName("UnDirected")
                 action.triggered.connect(self.on_action_triggered)
                 self.buttons[2].setDefaultAction(action)
-                self.canvas.Directed = False
+                self.algorithms.Directed = False
                 
             case "UnDirected":
                 action = QAction(QIcon(), "Directed", self)
@@ -63,10 +63,10 @@ class MyToolBar(QWidget):
                 action.setObjectName("Directed")
                 action.triggered.connect(self.on_action_triggered)
                 self.buttons[2].setDefaultAction(action)
-                self.canvas.Directed = True
+                self.algorithms.Directed = True
                 
             case "BFS":
-                if self.canvas.Directed and self.canvas.selected_circle != None : 
+                if self.algorithms.Directed and self.algorithms.selected_circle != None : 
                     self.algorithms.BfsAnimation()
                 else:
                     pass
@@ -74,7 +74,7 @@ class MyToolBar(QWidget):
                 
             case _:
                 pass
-        self.canvas.update()
+        self.algorithms.update()
         
         
         
