@@ -1,7 +1,6 @@
 from Imports import *
 from PyQt5.QtWidgets import QWidget, QToolBar, QAction, QToolButton, QSizePolicy
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QSize
+
 
 class MyToolBar(QWidget):
     def __init__(self,algorithms):
@@ -9,8 +8,8 @@ class MyToolBar(QWidget):
         self.algorithms = algorithms
         self.buttons = []
         self.toolBar = QToolBar("side", self)
-        self.toolBar.setMinimumSize(int(self.width()*0.4), int(self.width()*0.4))
-        
+        self.toolBar.setMinimumSize(int(self.width()*0.2), int(self.width()*0.2))
+        self.toolBar.setStyleSheet("")
        
         self.create_action_button(text="Clean")  #0
         self.create_action_button(text="Directed")  #1
@@ -24,18 +23,17 @@ class MyToolBar(QWidget):
 
 
 
-    def create_action_button(self, icon: QIcon = QIcon(), text: str = "", short_cut: str = "", color: str = ""):
+    def create_action_button(self, text: str = ""):
         
-        action = QAction(icon, text, self)
-        action.setShortcut(short_cut)
+        action = QAction(text, self)
         action.setObjectName(text)
         action.triggered.connect(self.on_action_triggered)
 
        
         button = QToolButton()
         button.setDefaultAction(action)
-        button.setStyleSheet(f"background-color: #333333; color: white; border: none; padding: 5px;")
-        button.setIconSize(QSize(24, 24)) 
+        button.setStyleSheet(f"background-color: #333333; color: white; border: none; padding: 5px; margin: 5px; width:100%")
+    
 
    
         self.toolBar.addWidget(button)
@@ -50,16 +48,14 @@ class MyToolBar(QWidget):
                 self.algorithms.Lines.clear()
                 
             case "Directed":
-                action = QAction(QIcon(), "UnDirected", self)
-                action.setShortcut("")
+                action = QAction("UnDirected", self)
                 action.setObjectName("UnDirected")
                 action.triggered.connect(self.on_action_triggered)
                 self.buttons[1].setDefaultAction(action)
                 self.algorithms.Directed = False
                 
             case "UnDirected":
-                action = QAction(QIcon(), "Directed", self)
-                action.setShortcut("")
+                action = QAction("Directed", self)
                 action.setObjectName("Directed")
                 action.triggered.connect(self.on_action_triggered)
                 self.buttons[1].setDefaultAction(action)
