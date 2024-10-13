@@ -11,12 +11,12 @@ class MyToolBar(QWidget):
         self.toolBar = QToolBar("side", self)
         self.toolBar.setMinimumSize(int(self.width()*0.4), int(self.width()*0.4))
         
-        # Create actions with different colors
+       
         self.create_action_button(text="Clean")  #0
-        self.create_action_button(text="BFS")  #1
-        self.create_action_button(text="Directed")  #2
+        self.create_action_button(text="Directed")  #1
+        self.create_action_button(text="BFS")  #2
+        self.create_action_button(text="DFS")
         
-        # Add spacer to the toolbar
         spacer = QWidget()
         spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         spacer.setStyleSheet("background-color: #222222;")
@@ -31,13 +31,13 @@ class MyToolBar(QWidget):
         action.setObjectName(text)
         action.triggered.connect(self.on_action_triggered)
 
-        # Create a QToolButton for the action
+       
         button = QToolButton()
         button.setDefaultAction(action)
         button.setStyleSheet(f"background-color: #333333; color: white; border: none; padding: 5px;")
-        button.setIconSize(QSize(24, 24))  # Adjust icon size as needed
+        button.setIconSize(QSize(24, 24)) 
 
-        # Add the styled button to the toolbar
+   
         self.toolBar.addWidget(button)
         self.buttons.append(button)
 
@@ -54,7 +54,7 @@ class MyToolBar(QWidget):
                 action.setShortcut("")
                 action.setObjectName("UnDirected")
                 action.triggered.connect(self.on_action_triggered)
-                self.buttons[2].setDefaultAction(action)
+                self.buttons[1].setDefaultAction(action)
                 self.algorithms.Directed = False
                 
             case "UnDirected":
@@ -62,14 +62,23 @@ class MyToolBar(QWidget):
                 action.setShortcut("")
                 action.setObjectName("Directed")
                 action.triggered.connect(self.on_action_triggered)
-                self.buttons[2].setDefaultAction(action)
+                self.buttons[1].setDefaultAction(action)
                 self.algorithms.Directed = True
                 
             case "BFS":
-                if self.algorithms.Directed and self.algorithms.selected_circle != None : 
-                    self.algorithms.BfsAnimation()
-                else:
-                    pass
+                if self.algorithms.selected_circle != None:
+                    if self.algorithms.Directed: 
+                        self.algorithms.DirectedBfsAnimation()
+                    else:
+                        self.algorithms.UnDirectedBfsAnimation()
+                    
+            case "DFS":
+                if self.algorithms.selected_circle != None:
+                    if self.algorithms.Directed: 
+                        self.algorithms.DirectedDfsAnimation()
+                        
+                    else:
+                        self.algorithms.UnDirectedDfsAnimation()
 
                 
             case _:

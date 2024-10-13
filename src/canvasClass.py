@@ -50,8 +50,8 @@ class lines:
         Point2 = [int(self.To.center.x() + self.To.radius * np.cos(Alpha) ), int(self.To.center.y() + self.To.radius * np.sin(Alpha)) ]
                 
                 
-        painter.setBrush(QColor(self.color))  # Fill color
-        painter.setPen(QPen(QColor(self.color), 3))  # Outline color
+        painter.setBrush(QColor(self.color))  
+        painter.setPen(QPen(QColor(self.color), 3))  
         painter.drawLine(Point1[0],Point1[1],Point2[0],Point2[1])
                 
         ArrowTip1 = [int(Point2[0]+ArrowSize*np.cos(Alpha + ArrowDegree)) ,int(Point2[1] + ArrowSize*np.sin(Alpha + ArrowDegree))]
@@ -71,23 +71,25 @@ class lines:
         Point2 = [int(self.To.center.x() + self.To.radius * np.cos(Alpha) ), int(self.To.center.y() + self.To.radius * np.sin(Alpha)) ]
                 
                 
-        painter.setBrush(QColor("#393646"))  # Fill color
-        painter.setPen(QPen(QColor("#222222"), 3))  # Outline color
+        painter.setBrush(QColor(self.color))  
+        painter.setPen(QPen(QColor(self.color), 3)) 
         painter.drawLine(Point1[0],Point1[1],Point2[0],Point2[1])
   #................................................................................................................................................................#      
 
 class Canvas(QWidget):
     def __init__(self,timer):
         super().__init__()
-        self.setMinimumSize(700, 400)  # Set minimum size for the canvas
-        self.circles = []  # List to hold circles
-        self.selected_circle = None  # Track the currently selected circle
+        self.setMinimumSize(700, 400) 
+        self.circles = [] 
+        self.selected_circle = None  
         self.dragging = False
         self.dragged = False
         self.Directed = True
         self.Lines = []
         self.is_animating = False
         self.timer = timer
+        self.AnimatedLines = []
+        self.Started = []
 
         
         
@@ -105,19 +107,19 @@ class Canvas(QWidget):
     def drawCircles(self,painter):
         for circle in self.circles:
             if(circle == self.selected_circle):
-                painter.setBrush(QColor("#ffffff"))  # Fill color
+                painter.setBrush(QColor("#ffffff"))  
             else:
-                painter.setBrush(QColor(circle.color))  # Fill color
-            painter.setPen(QPen(QColor("#222222"), 3))  # Outline color
+                painter.setBrush(QColor(circle.color))  
+            painter.setPen(QPen(QColor("#222222"), 3))  
             painter.drawEllipse(circle.center, circle.radius, circle.radius)
 
 
     def paintEvent(self, event):
         painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)  # Enable antialiasing for smoother circles
+        painter.setRenderHint(QPainter.Antialiasing)  
         
-        painter.setBrush(QColor("#333333"))  # Fill color
-        painter.setPen(QPen(QColor("#222222"), 3))  # Outline color
+        painter.setBrush(QColor("#333333"))  
+        painter.setPen(QPen(QColor("#222222"), 3))  
         painter.drawRect(0,0,self.width(),self.height())
     
        
@@ -139,8 +141,9 @@ class Canvas(QWidget):
     
     
     def LeftButtonEve(self,event):
-        self.is_animating = False
-        # Check if we clicked on an existing circle
+        
+
+       
         for circle in self.circles:
                 
             if circle.contains(event.pos()):
@@ -169,8 +172,8 @@ class Canvas(QWidget):
                 if(circle.overlap(event.pos())):
                     return
             
-                # If no circle is selected, create a new one
-            new_circle = Circle(event.pos(), 30 , "#505050")  # Create a circle with radius 30
+               
+            new_circle = Circle(event.pos(), 30 , "#505050")  
             self.circles.append(new_circle)
                 
 
@@ -206,7 +209,13 @@ class Canvas(QWidget):
             return False 
 
     def mousePressEvent(self, event):
+        
+        
         if(not self.OnScreen(event)):
+            return
+
+        if(self.is_animating):
+            self.StopAnimation()
             return
         
         if event.button() == Qt.LeftButton:
@@ -215,7 +224,7 @@ class Canvas(QWidget):
         elif event.button() == Qt.RightButton:
            self.RightButtonEve(event)
                 
-        self.update()  # Repaint the canvas
+        self.update()  
         
 
     def mouseMoveEvent(self, event):
@@ -227,25 +236,42 @@ class Canvas(QWidget):
                     return
             self.dragged = True
             self.selected_circle.center = event.pos()
-        self.update()  # Repaint the canvas
+        self.update()  
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.LeftButton:
             if self.dragging:
                 if not self.dragged:
-                    self.dragging = False  # Deselect the circle
-                    self.update()  # Repaint the canvas
+                    self.dragging = False  
+                    self.update() 
                 else:
                     self.dragged = False
                     self.dragging = False
-                    self.selected_circle = None  # Deselect the circle
-                    self.update()  # Repaint the canvas
+                    self.selected_circle = None  
+                    self.update()  
             
     
-    
+    def StopAnimation(self):
+            self.timer.disconnect()
+            self.timer.stop()
+            self.is_animating =False
+            for circle in self.circles:
+                circle.color = "#505050"
+            for line in self.Lines:
+                line.color =  "#222222"
+            self.update()
 
         
-        
+    def ResetAnimation(self):
+        self.timer.disconnect()
+        self.timer.stop()
+        self.is_animating =False
+        self.AnimatedLines = []
+        for circle in self.circles:
+            circle.color = "#505050"
+        for line in self.Lines:
+            line.color =  "#222222"    
+        self.update()
        
         
             
