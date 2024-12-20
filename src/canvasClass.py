@@ -24,7 +24,7 @@ class Circle:
  
  
  
-class lines:
+class Line:
     def __init__(self, From:Circle, To: Circle ,  color:str):
         self.From = From
         self.To = To
@@ -74,8 +74,11 @@ class lines:
         painter.setBrush(QColor(self.color))  
         painter.setPen(QPen(QColor(self.color), 3)) 
         painter.drawLine(Point1[0],Point1[1],Point2[0],Point2[1])
-  #................................................................................................................................................................#      
-
+        
+        
+    
+  
+  
 class Canvas(QWidget):
     def __init__(self,timer):
         super().__init__()
@@ -152,7 +155,7 @@ class Canvas(QWidget):
                     self.dragging = True
                 elif(self.selected_circle != circle and not self.LineExists(self.selected_circle,circle)):
                     
-                    self.Lines.append(lines(self.selected_circle , circle , "#222222" ))
+                    self.Lines.append(Line(self.selected_circle , circle , "#222222" ))
                     self.selected_circle = None
                    
                 elif(self.selected_circle != circle and self.LineExists(self.selected_circle,circle)[0]):

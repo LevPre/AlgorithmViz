@@ -63,18 +63,11 @@ class MyToolBar(QWidget):
                 
             case "BFS":
                 if self.algorithms.selected_circle != None:
-                    if self.algorithms.Directed: 
-                        self.algorithms.DirectedBfsAnimation()
-                    else:
-                        self.algorithms.UnDirectedBfsAnimation()
+                    self.algorithms.BFSAnimation()
                     
             case "DFS":
                 if self.algorithms.selected_circle != None:
-                    if self.algorithms.Directed: 
-                        self.algorithms.DirectedDfsAnimation()
-                        
-                    else:
-                        self.algorithms.UnDirectedDfsAnimation()
+                    self.algorithms.DFSAnimation()
 
                 
             case _:
